@@ -234,23 +234,28 @@ $('f').addEventListener('submit', function(e) {
   var btn = $('f').querySelector('[type="submit"]');
   if (btn) btn.disabled = true;
 
-  fetch(SHEET_URL, {
-    method: 'POST',
-    mode: 'no-cors',
-    headers: {
-      'Content-Type': 'text/plain;charset=utf-8'
-    },
-    body: JSON.stringify(data)
-  })
+  
   .then(function() {
-    err.textContent = 'Registration submitted! Please check with the organisers if you need confirmation.';
-    err.style.color = 'green';
+    // Show success popup
+    $('successBox').style.display = 'flex';
+
+    // Play success sound
+    var audio = new Audio(
+      'https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg'
+    );
+    audio.play().catch(function() {});
+
+    // Reset registration form
     $('f').reset();
     us.innerHTML = '<option value="">-- Select zone first --</option>';
     us.disabled = true;
     $('ok').disabled = false;
   })
   .catch(function(error) {
+    err.textContent = 'Registration failed. Please try again.';
+    err.style.color = 'red';
+  });
+
     err.textContent = 'Unable to submit. Please try again.';
     err.style.color = 'red';
   })
@@ -259,6 +264,13 @@ $('f').addEventListener('submit', function(e) {
   });
 });
 </script>
-
+<div id="successBox" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:9999; align-items:center; justify-content:center; text-align:center; padding:20px;">
+  <div style="background:white; padding:35px 25px; border-radius:20px; max-width:350px; width:100%;">
+    <div style="background:#e5f8eb; color:#159447; width:75px; height:75px; border-radius:50%; font-size:48px; line-height:75px; margin:0 auto 18px;">✓</div>
+    <h2 style="color:#159447;">Registration Successfully Completed!</h2>
+    <p>Your registration has been received. Thank you!</p>
+    <button onclick="document.getElementById('successBox').style.display='none'" style="padding:12px 25px; background:#159447; color:white; border:0; border-radius:8px;">OK</button>
+  </div>
+</div>
 </body>
 </html>
